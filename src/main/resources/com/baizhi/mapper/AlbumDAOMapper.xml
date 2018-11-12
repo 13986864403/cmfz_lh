@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.AlbumDAO">
+
+    <resultMap id="AlbumResultMap" type="Album">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="author" column="author"/>
+        <result property="broadcasting" column="broadcasting"/>
+        <result property="blues" column="blues"/>
+        <result property="content" column="content"/>
+        <result property="release_time" column="release_time"/>
+        <result property="evaluation" column="evaluation"/>
+        <result property="images" column="images"/>
+        <collection property="children" ofType="Audio">
+            <id property="id" column="aa_id"/>
+            <result property="name" column="aa_name"/>
+            <result property="size" column="aa_size"/>
+            <result property="download_path" column="aa_download_path"/>
+            <result property="size" column="aa_size"/>
+            <result property="duration" column="aa_duration"/>
+            <result property="album_id" column="album_id"/>
+        </collection>
+    </resultMap>
+
+   <!--查所有-->
+    <select id="queryAll" resultMap="AlbumResultMap">
+       select a.id,a.name,a.author,a.broadcasting,a.blues,a.content,a.release_time,a.evaluation,a.images,
+        aa.id as aa_id,aa.name as aa_name,aa.size as aa_size,aa.download_path as aa_download_path,aa.duration as aa_duration,aa.album_id as album_id
+       from album a
+       LEFT outer JOIN audio aa
+       on a.id=aa.album_id
+    </select>
+
+    <!--分页查询-->
+    <select id="queryByPage" resultMap="AlbumResultMap">
+         select a.id,a.name,a.author,a.broadcasting,a.blues,a.content,a.release_time,a.evaluation,a.images,
+         aa.id as aa_id,aa.name as aa_name,aa.size as aa_size,aa.download_path as aa_download_path,aa.duration as aa_duration,aa.album_id as album_id
+         from album a
+         LEFT outer JOIN audio aa
+         on a.id=aa.album_id
+        limit #{start},#{rows}
+    </select>
+
+
+    <!--总条数-->
+    <select id="queryTotals" resultType="long">
+        select count(id) from album
+    </select>
+
+
+    <!--删除-->
+    <delete id="delete" parameterType="string">
+        delete from album where id=#{id}
+    </delete>
+
+
+    <!--批量删除-->
+    <delete id="deleteAllByIds">
+        delete from album where id in
+        <foreach collection="array" open="(" item="ids" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+
+    <update id="update" parameterType="Album">
+        update album
+        <set>
+            <if test="id!=null">
+                id=#{id},
+            </if>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="author!=null">
+                author=#{author},
+            </if>
+            <if test="broadcasting!=null">
+                broadcasting=#{broadcasting},
+            </if>
+            <if test="blues!=null">
+                blues=#{blues},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="release_time!=null">
+                release_time=#{release_time},
+            </if>
+            <if test="evaluation!=null">
+                evaluation=#{evaluation},
+            </if>
+            <if test="images!=null">
+                images=#{images},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--查一个-->
+    <select id="queryOne" resultMap="AlbumResultMap">
+       select a.id,a.name,a.author,a.broadcasting,a.blues,a.content,a.release_time,a.evaluation,a.images,
+        aa.id as aa_id,aa.name as aa_name,aa.size as aa_size,aa.download_path as aa_download_path,aa.duration as aa_duration,aa.album_id as album_id
+       from album a
+       LEFT outer JOIN audio aa
+       on a.id=aa.album_id
+      where a.id=#{id} or aa.album_id=#{id}
+    </select>
+
+    <!--添加-->
+    <insert id="inseret" parameterType="Album">
+        insert into album values (#{id},#{name},#{author},#{broadcasting},#{blues},#{content},#{release_time},#{evaluation},#{images})
+    </insert>
+
+
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.ArticleDAO">
+
+<resultMap id="ArticleAll" type="Article">
+    <id property="id" column="id"/>
+    <result property="title" column="title"/>
+    <result property="publishDate" column="publishDate"/>
+    <result property="content" column="content"/>
+    <result property="imgPath" column="imgPath"/>
+    <result property="difference" column="difference"/>
+    <result property="shows" column="shows"/>
+    <association property="guru" javaType="Guru">
+        <id property="id" column="g_id"/>
+        <result property="name" column="g_name"/>
+        <result property="headPic" column="g_headPic"/>
+        <result property="gender" column="g_gender"/>
+        <result property="createTime" column="g_createTime"/>
+        <result property="status" column="g_status"/>
+    </association>
+</resultMap>
+   <!--查所有-->
+    <select id="queryAll" resultMap="ArticleAll">
+      select  aa.id,aa.title,aa.publishDate,aa.content,aa.imgPath,aa.difference,aa.shows,aa.guru_id,g.id as g_id,g.name as g_name,g.headPic as g_headPic,g.gender as g_gender,g.createTime as g_createTime,g.status as g_status
+        from article aa
+        inner join guru g
+        on g.id=aa.guru_id
+
+
+    </select>
+
+
+    <!--分页查询-->
+    <select id="queryByPage" resultMap="ArticleAll">
+      select  aa.id,aa.title,aa.publishDate,aa.content,aa.imgPath,aa.difference,aa.shows,aa.guru_id,g.id as g_id,g.name as g_name,g.headPic as g_headPic,g.gender as g_gender,g.createTime as g_createTime,g.status as g_status
+        from article aa
+        inner join guru g
+        on g.id=aa.guru_id
+        where aa.difference=#{difference}
+        limit #{start},#{rows}
+    </select>
+
+
+    <!--总条数-->
+    <select id="queryTotals" resultType="long">
+        select count(id) from article
+    </select>
+
+
+    <!--删除-->
+    <delete id="delete" parameterType="string">
+        delete from article where id=#{id}
+    </delete>
+
+
+    <!--批量删除-->
+    <delete id="deleteAllByIds">
+        delete from article where id in
+        <foreach collection="array" open="(" item="ids" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <!--修改-->
+    <!--<update id="update" parameterType="User">
+        update user set id=#{id},headPic=#{headPic},Dharma_name=#{Dharma_name},username=#{username},password=#{password},gender=#{gender},home=#{home},phoneNum=#{phoneNum},sign=#{sign},status=#{status},register_time=#{register_time} where id=#{id}
+    </update>-->
+
+    <update id="update" parameterType="Article">
+        update article
+        <set>
+            <if test="id!=null">
+                id=#{id},
+            </if>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="publishDate!=null">
+                publishDate=#{publishDate},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="imgPath!=null">
+                imgPath=#{imgPath},
+            </if>
+            <if test="guru_id!=null">
+                guru_id=#{guru.id},
+            </if>
+            <if test="difference!=null">
+                difference=#{difference},
+            </if>
+            <if test="shows!=null">
+                shows=#{shows},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--查一个-->
+    <select id="queryOne" resultMap="ArticleAll">
+       /* select id,title,publishDate,content,imgPath,guru.guru_id from article where id=#{id}*/
+      /* select  aa.id,aa.title,aa.publishDate,aa.content,aa.imgPath,aa.guru_id,aa.difference,aa.show,g.id as g_id,g.name as g_name,g.headPic as g_headPic,g.gender as g_gender,g.createTime as g_createTime,g.status as g_status
+        from article aa
+        inner join guru g
+        on g.id=aa.guru_id
+        where g.id=#{id}*/
+    </select>
+
+    <!--添加-->
+    <insert id="inseret" parameterType="Article">
+        insert into article values (#{id},#{title},#{publishDate},#{content},#{imgPath},#{guru.id},#{difference},#{shows})
+    </insert>
+
+
+</mapper>

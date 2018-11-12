@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.GuruDAO">
+   <!--查所有-->
+    <select id="queryAll" resultType="Guru">
+        select id,name,headPic,gender,createTime,status from guru
+    </select>
+
+    <!--分页查询-->
+    <select id="queryByPage" resultType="Guru">
+      select  id,name,headPic,gender,createTime,status from guru limit #{start},#{rows}
+    </select>
+
+    <!--总条数-->
+    <select id="queryTotals" resultType="long">
+        select count(id) from user
+    </select>
+
+
+    <!--删除-->
+    <delete id="delete" parameterType="string">
+        delete from guru where id=#{id}
+    </delete>
+
+
+    <!--批量删除-->
+    <delete id="deleteAllByIds">
+        delete from guru where id in
+        <foreach collection="array" open="(" item="ids" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <!--修改-->
+    <!--<update id="update" parameterType="User">
+        update user set id=#{id},headPic=#{headPic},Dharma_name=#{Dharma_name},username=#{username},password=#{password},gender=#{gender},home=#{home},phoneNum=#{phoneNum},sign=#{sign},status=#{status},register_time=#{register_time} where id=#{id}
+    </update>-->
+
+    <update id="update" parameterType="Guru">
+        update guru
+        <set>
+            <if test="id!=null">
+                id=#{id},
+            </if>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="headPic!=null">
+                headPic=#{headPic},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender},
+            </if>
+            <if test="createTime!=null">
+                createTime=#{createTime},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--查一个-->
+    <select id="queryOne" resultType="Guru">
+        select id,name,headPic,gender,createTime,status from guru where id=#{id}
+    </select>
+
+    <!--添加-->
+    <insert id="inseret" parameterType="Guru">
+        insert into guru values (#{id},#{name},#{headPic},#{gender},#{createTime},#{status})
+    </insert>
+
+</mapper>

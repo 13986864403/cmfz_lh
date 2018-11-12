@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.BannerDAO">
+
+<!--查所有-->
+    <select id="queryBannerAll" resultType="Banner">
+        select id ,title,imgPaths,createTime,status,descs from banner
+    </select>
+
+    <!--分页查询-->
+    <select id="queryBannerByPage" resultType="Banner">
+      select id ,title,imgPaths,createTime,status,descs from banner limit #{start},#{rows}
+    </select>
+
+    <!--总条数-->
+    <select id="queryBannerTotals" resultType="long">
+        select count(id) from banner
+    </select>
+
+
+    <!--删除-->
+    <delete id="delete" parameterType="string">
+        delete from banner where id=#{id}
+    </delete>
+
+
+    <!--批量删除-->
+    <delete id="deleteAllByIds">
+        delete from banner where id in
+        <foreach collection="array" open="(" item="ids" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <!--修改-->
+    <!--<update id="update" parameterType="Banner">
+        update banner set title=#{title},imgPaths=#{imgPaths},createTime=#{createTime},status=#{status},descs=#{descs} where id=#{id}
+    </update>-->
+
+    <update id="update" parameterType="Banner">
+        update banner
+        <set>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="imgPaths!=null">
+                imgPaths=#{imgPaths},
+            </if>
+            <if test="createTime!=null">
+                createTime=#{createTime},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="descs!=null">
+                descs=#{descs},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--查一个-->
+    <select id="queryOne" resultType="Banner">
+        select id ,title,imgPaths,createTime,status,descs from banner where id=#{id}
+    </select>
+
+    <!--添加-->
+    <insert id="inseret" parameterType="Banner">
+        insert into banner values (#{id},#{title},#{imgPaths},#{createTime},#{status},#{descs})
+    </insert>
+
+</mapper>

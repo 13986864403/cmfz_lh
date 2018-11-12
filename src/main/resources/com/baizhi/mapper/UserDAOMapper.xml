@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.UserDAO">
+
+    <!--查所有-->
+    <select id="queryByPage" resultType="User" >
+        select id,headPic,Dharma_name,username,password,gender,home,phoneNum,sign,status,register_time,salt from user limit #{start},#{rows}
+    </select>
+
+    <!--总条数-->
+    <select id="queryTotals" resultType="long">
+        select count(id) from album
+    </select>
+
+    <update id="update" parameterType="User">
+        update user
+        <set>
+            <if test="id!=null">
+                id=#{id},
+            </if>
+            <if test="headPic!=null">
+                headPic=#{headPic},
+            </if>
+            <if test="Dharma_name!=null">
+                Dharma_name=#{Dharma_name},
+            </if>
+            <if test="username!=null">
+                username=#{username},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender},
+            </if>
+            <if test="home!=null">
+                home=#{home},
+            </if>
+            <if test="phoneNum!=null">
+                phoneNum=#{phoneNum},
+            </if>
+            <if test="sign!=null">
+                sign=#{sign},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="register_time!=null">
+                register_time=#{register_time}
+            </if>
+            <if test="salt!=null">
+                salt=#{salt}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--查一个-->
+    <select id="queryOne" resultType="User">
+        select id,headPic,Dharma_name,username,password,gender,home,phoneNum,sign,status,register_time,salt from user where username=#{username}
+    </select>
+<!--登陆-->
+    <select id="login" resultType="User">
+        select id,headPic,Dharma_name,username,password,gender,home,phoneNum,sign,status,register_time,salt from user where username=#{username} and password=#{password}
+    </select>
+
+    <!--添加-->
+    <insert id="inseret" parameterType="User">
+        insert into user values (#{id},#{headPic},#{Dharma_name},#{username},#{password},#{gender},#{home},#{phoneNum},#{sign},#{status},#{register_time},#{salt})
+    </insert>
+
+</mapper>
